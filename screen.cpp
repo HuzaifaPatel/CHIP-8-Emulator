@@ -39,12 +39,47 @@ void Screen::input(){
 
 
 void Screen::draw(){
-	SDL_SetRenderDrawColor(renderer, 40, 43, 200, 255);
-	SDL_Rect rect;
-	rect.x = rect.y = 0;
-	rect.w = 100;
-	rect.h = 100;
-	SDL_RenderFillRect(renderer, &rect);
+	SDL_SetRenderDrawColor(renderer, 20, 20, 200, 255); //color
+	SDL_Rect rect1 = {0, 0, 12, 12};
+	SDL_Rect rect2 = {12, 0, 12, 12};
+	SDL_Rect rect3 = {24, 0, 12, 12};
+	SDL_Rect rect4 = {36, 0, 12, 12};
+	SDL_Rect rect5 = {0, 12, 12, 12};
+
+	// SDL_Rect rect1;
+	// rect1.x = 1 * 12;
+	// rect1.y = 1 * 1;
+	// rect1.w = 8 * 6;
+	// rect1.h = 5 * 6;
+
+	// SDL_Rect rect2;
+	// rect2.x = 1 * 24;
+	// rect2.y = 1 * 1;
+	// rect2.w = 8 * 6;
+	// rect2.h = 5 * 6;
+
+	// SDL_Rect rect3;
+	// rect3.x = 1 * 36;
+	// rect3.y = 1 * 1;
+	// rect3.w = 8 * 6;
+	// rect3.h = 5 * 6;
+
+
+
+	// SDL_Rect rect4;
+	// rect4.x = 1 * 1;
+	// rect4.y = 1 * 36;
+	// rect4.w = 8 * 6;
+	// rect4.h = 5 * 6;
+
+
+
+
+	SDL_RenderFillRect(renderer, &rect1);
+	SDL_RenderFillRect(renderer, &rect2);
+	SDL_RenderFillRect(renderer, &rect3);
+	SDL_RenderFillRect(renderer, &rect4);
+	SDL_RenderFillRect(renderer, &rect5);
 
 	frameCount++;
 	int timerFPS = SDL_GetTicks() - lastFrame;
