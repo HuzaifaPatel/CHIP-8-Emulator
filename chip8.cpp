@@ -135,6 +135,7 @@ void Chip8::OP_8xy0(){
 }
 
 
+
 void Chip8::OP_8xy1(){
 	unsigned long x = (opcode & 0x0F00) >> 8;
 	unsigned long y = (opcode & 0x00F0) >> 8;
