@@ -3,21 +3,20 @@
 #include <SDL2/SDL.h>  
 #include <iostream>
 
-#define WIDTH 	640
-#define HEIGHT 	320
+#define WIDTH 	64
+#define HEIGHT 	32
 
 
 
 class Screen{
 	public:
 		Screen();
-		void update();
+		~Screen();
+		void update(void const* buffer, int pitch);
 		void input();
-		void draw();
 		void load_screen();
 		void clear_screen();
-		SDL_Renderer* renderer;
-		SDL_Window* window;
+		char checkKey();
 		bool running;
 		bool fullscreen;
 		int frameCount;
@@ -25,6 +24,12 @@ class Screen{
 		int lastFrame;
 		int lastTime;
 		int fps;
-		SDL_Rect rectangles[(640/10) * (320/10)];
+		SDL_Renderer* renderer;
+		SDL_Window* window;
+		SDL_Surface* screen;
+		SDL_Surface* pixels;
+		SDL_Texture* texture;
+		SDL_Event event;
+
 };
 #endif

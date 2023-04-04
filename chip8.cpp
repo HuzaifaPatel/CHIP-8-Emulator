@@ -243,7 +243,7 @@ void Chip8::OP_9xy0(){
 void Chip8::OP_Annn(){
 	unsigned long nnn = opcode & 0x0FFF;
 
-	I = nnn;
+	index_register = nnn;
 }
 
 
@@ -255,8 +255,49 @@ void Chip8::OP_Bnnn(){
 
 
 void Chip8::OP_Cxkk(){
-	
+	unsigned long x = (opcode & 0x0F00) >> 8;
+	unsigned int kk = opcode & 0x00FF;
+
+	registers[x] = (rand() % 255) & kk;
 }
+
+void Chip8::OP_Dxyn(){
+	unsigned long Vx = (opcode & 0x0F00) >> 8;
+	unsigned long Vy = (opcode & 0x00F0) >> 8;
+	unsigned long x = registers[Vx];
+	unsigned long y = registers[Vy];
+	unsigned long n = (opcode & 0x000F);
+	uint16_t temp_index_register = index_register;
+
+	for(int row = 0; row < n; row++){
+		temp_index_register += row;
+
+		for(int col = 0; col < 8; col++){
+			display[row + x + y + col] = 1;
+		}
+	}
+
+}
+
+
+
+void Chip8::OP_Ex9E(){
+	unsigned long x = (opcode & 0x0F00) >> 8;
+
+	if(registers[x] == screen->checkKey()){
+		program_counter += 2;
+	}
+}
+
+
+void Chip8::OP_ExA1(){
+	unsigned long x = (opcode & 0x0F00) >> 8;
+
+	if(registers[x] != screen->checkKey()){
+		program_counter += 2;
+	}
+}
+
 
 
 

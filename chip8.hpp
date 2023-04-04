@@ -5,7 +5,9 @@
 #include <iostream>
 #include <bitset>
 #include <string>
-#include <sstream> 
+#include <sstream>
+#include <time.h>
+#include <stdlib.h>
 #include "screen.hpp"
 #define ROM "test_rom_opcode.ch8"
 
@@ -33,7 +35,6 @@ class Chip8{
 	private:
 		uint16_t opcode;
 		uint8_t registers[16];
-		uint16_t I;
 		uint8_t memory[4096];
 		uint16_t index_register;
 		uint16_t program_counter;
@@ -67,6 +68,8 @@ class Chip8{
 		void OP_Annn();
 		void OP_Bnnn();
 		void OP_Cxkk();
-
+		void OP_Dxyn();
+		void OP_Ex9E();
+		void OP_ExA1();
 };
 #endif

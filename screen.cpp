@@ -1,19 +1,27 @@
 #include "screen.hpp"
 
 Screen::Screen(){
-	this->running = 1;
-	this->fullscreen = 0;
+	SDL_Init(SDL_INIT_EVERYTHING);
+
+	window = SDL_CreateWindow("CHIP 8 EMULATOR", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH*8, HEIGHT*8, SDL_WINDOW_SHOWN);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, WIDTH, HEIGHT);
 }
 
 
-void Screen::update(){
-	if(fullscreen){
-		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
-	}
+Screen::~Screen(){
+	SDL_DestroyTexture(texture);
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
+	SDL_Quit();
+}
 
-	if(!fullscreen){
-		SDL_SetWindowFullscreen(window, 0);
-	}
+
+void Screen::update(void const* sprite, int pitch){
+	SDL_UpdateTexture(texture, NULL, sprite, 8);
+	SDL_RenderClear(renderer);
+	SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+	SDL_RenderPresent(renderer);
 }
 
 
@@ -42,63 +50,64 @@ void Screen::clear_screen(){
 	SDL_RenderClear(renderer);
 }
 
-void Screen::draw(){
-	SDL_SetRenderDrawColor(renderer, 20, 20, 200, 255); //color
-	SDL_Rect rect1 = {0, 0, 10, 10};
-	SDL_Rect rect2 = {10, 0, 10, 10};
-	SDL_Rect rect3 = {20, 0, 10, 10};
-	SDL_Rect rect4 = {30, 0, 10, 10};
-	SDL_Rect rect5 = {0, 10, 10, 10};
 
-
-	SDL_RenderFillRect(renderer, &rect1);
-	SDL_RenderFillRect(renderer, &rect2);
-	SDL_RenderFillRect(renderer, &rect3);
-	SDL_RenderFillRect(renderer, &rect4);
-	SDL_RenderFillRect(renderer, &rect5);
-
-	frameCount++;
-	int timerFPS = SDL_GetTicks() - lastFrame;
-
-	if(timerFPS < (1000/60)){
-		SDL_Delay((1000/60) - timerFPS);
+char Screen::checkKey(){
+	while(SDL_PollEvent(&event)){            
+	    switch( event.type ){
+	        /* Keyboard event */
+	        case SDLK_0:
+	        	return '0';
+	        case SDLK_1:
+	        	return '1';
+	        case SDLK_2:
+	        	return '2';
+	        case SDLK_3:
+	        	return '3';
+	        case SDLK_4:
+	        	return '4';
+	        case SDLK_5:
+	        	return '5';
+	        case SDLK_6:
+	        	return '6';
+	        case SDLK_7:
+	        	return '7';
+			case SDLK_8:
+				return '8';
+			case SDLK_9:
+				return '9';
+			case SDLK_a:
+				return 'A';
+			case SDLK_b:
+				return 'B';
+			case SDLK_c:
+				return 'C';
+			case SDLK_d:
+				return 'D';
+			case SDLK_e:
+				return 'E';
+			case SDLK_f:
+				return 'F';
+	        default:
+	            return -1;
+	    }
 	}
 
-
-	SDL_RenderPresent(renderer);
+	return -1;
 }
 
 
 void Screen::load_screen(){
-	if(SDL_Init(SDL_INIT_EVERYTHING) < 0){
-		std::cout << "FAILED AT SDL_INIT_EVERYTHING" << std::endl;
-	}
 
-	if(SDL_CreateWindowAndRenderer(WIDTH, HEIGHT, 0, &window, &renderer) < 0){
-		std::cout << "Failed at SDL_CreateWindowAndRederer";
-	}
 
-	SDL_SetWindowTitle(window, "Chip 8 Emulator");
-	SDL_ShowCursor(1);
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
-
-	while(running){
-		lastFrame = SDL_GetTicks();
-		if(lastFrame >= (lastFrame + 1000)) {
-			lastTime = lastFrame;
-			fps = frameCount;
-			frameCount = 0;
-		}
-
-		std::cout << fps << std::endl;
-
-		update();
-		input();
-		draw();
-		draw();
-	}
-
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
-	SDL_Quit();
+    for (;;)
+    {
+        SDL_Event ev;
+        while (SDL_PollEvent(&ev))
+        {
+            if (ev.type == SDL_QUIT)
+            {
+                return;
+            }
+        }
+    }
 }
