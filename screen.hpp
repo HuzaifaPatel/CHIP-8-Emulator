@@ -15,6 +15,7 @@ class Screen{
 		void input();
 		void draw();
 		void load_screen();
+		void clear_screen();
 		SDL_Renderer* renderer;
 		SDL_Window* window;
 		bool running;
@@ -24,5 +25,6 @@ class Screen{
 		int lastFrame;
 		int lastTime;
 		int fps;
+		SDL_Rect rectangles[(640/10) * (320/10)];
 };
 #endif

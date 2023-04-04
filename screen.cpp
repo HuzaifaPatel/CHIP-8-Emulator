@@ -38,41 +38,17 @@ void Screen::input(){
 }
 
 
+void Screen::clear_screen(){
+	SDL_RenderClear(renderer);
+}
+
 void Screen::draw(){
 	SDL_SetRenderDrawColor(renderer, 20, 20, 200, 255); //color
-	SDL_Rect rect1 = {0, 0, 12, 12};
-	SDL_Rect rect2 = {12, 0, 12, 12};
-	SDL_Rect rect3 = {24, 0, 12, 12};
-	SDL_Rect rect4 = {36, 0, 12, 12};
-	SDL_Rect rect5 = {0, 12, 12, 12};
-
-	// SDL_Rect rect1;
-	// rect1.x = 1 * 12;
-	// rect1.y = 1 * 1;
-	// rect1.w = 8 * 6;
-	// rect1.h = 5 * 6;
-
-	// SDL_Rect rect2;
-	// rect2.x = 1 * 24;
-	// rect2.y = 1 * 1;
-	// rect2.w = 8 * 6;
-	// rect2.h = 5 * 6;
-
-	// SDL_Rect rect3;
-	// rect3.x = 1 * 36;
-	// rect3.y = 1 * 1;
-	// rect3.w = 8 * 6;
-	// rect3.h = 5 * 6;
-
-
-
-	// SDL_Rect rect4;
-	// rect4.x = 1 * 1;
-	// rect4.y = 1 * 36;
-	// rect4.w = 8 * 6;
-	// rect4.h = 5 * 6;
-
-
+	SDL_Rect rect1 = {0, 0, 10, 10};
+	SDL_Rect rect2 = {10, 0, 10, 10};
+	SDL_Rect rect3 = {20, 0, 10, 10};
+	SDL_Rect rect4 = {30, 0, 10, 10};
+	SDL_Rect rect5 = {0, 10, 10, 10};
 
 
 	SDL_RenderFillRect(renderer, &rect1);
@@ -87,6 +63,7 @@ void Screen::draw(){
 	if(timerFPS < (1000/60)){
 		SDL_Delay((1000/60) - timerFPS);
 	}
+
 
 	SDL_RenderPresent(renderer);
 }
@@ -117,6 +94,7 @@ void Screen::load_screen(){
 
 		update();
 		input();
+		draw();
 		draw();
 	}
 

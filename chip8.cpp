@@ -61,6 +61,204 @@ void Chip8::load_font_in_memory(){
 }
 
 
+void Chip8::OP_CLS(){
+	screen->clear_screen();
+}
+
+
+void Chip8::OP_RET(){
+	program_counter = stack[0];
+	stack_pointer -= 1;
+}
+
+
+void Chip8::OP_JP(){
+	program_counter = opcode & 0xF000;
+}
+
+
+void Chip8::OP_CALL(){
+	stack_pointer += 1;
+	stack[0] = program_counter;
+	program_counter = opcode & 0xF000;
+}
+
+
+void Chip8::OP_3xkk(){
+	unsigned int x = (opcode & 0x0F00) >> 8;
+	unsigned int kk = opcode & 0x00FF;
+
+	if(registers[x] == kk){
+		program_counter += 2;
+	}
+}
+
+
+void Chip8::OP_4xkk(){
+	unsigned int x = (opcode & 0x0F00) >> 8;
+	unsigned int kk = opcode & 0x00FF;
+
+	if(registers[x] != kk){
+		program_counter += 2;
+	}
+}
+
+
+void Chip8::OP_5xy0(){
+	unsigned long x = (opcode & 0x0F00) >> 8;
+	unsigned long y = (opcode & 0x00F0) >> 8;
+
+	if(registers[x] == registers[y]){
+		program_counter += 2;
+	}
+}
+
+
+void Chip8::OP_6xkk(){
+	unsigned long x = (opcode & 0x0F00) >> 8;
+	registers[x] = opcode & 0x00FF;
+}
+
+
+void Chip8::OP_7xkk(){
+	unsigned long x = (opcode & 0x0F00) >> 8;
+
+	registers[x] = registers[x] + (opcode & 0x00FF);
+}
+
+
+void Chip8::OP_8xy0(){
+	unsigned long x = (opcode & 0x0F00) >> 8;
+	unsigned long y = (opcode & 0x00F0) >> 8;
+
+	registers[x] = registers[y];
+}
+
+
+void Chip8::OP_8xy1(){
+	unsigned long x = (opcode & 0x0F00) >> 8;
+	unsigned long y = (opcode & 0x00F0) >> 8;
+
+	registers[x] = x | y;
+}
+
+
+void Chip8::OP_8xy2(){
+	unsigned long x = (opcode & 0x0F00) >> 8;
+	unsigned long y = (opcode & 0x00F0) >> 8;
+
+	registers[x] = x & y;
+}
+
+
+void Chip8::OP_8xy3(){
+	unsigned long x = (opcode & 0x0F00) >> 8;
+	unsigned long y = (opcode & 0x00F0) >> 8;
+
+	registers[x] = x ^ y;
+}
+
+
+void Chip8::OP_8xy4(){
+	unsigned long x = (opcode & 0x0F00) >> 8;
+	unsigned long y = (opcode & 0x00F0) >> 8;
+
+	registers[x] = registers[x] + registers[y];
+
+	if(registers[x] > 0xFF){
+		registers[15] = 1;
+	}else{
+		registers[15] = 0;
+	}
+}
+
+
+void Chip8::OP_8xy5(){
+	unsigned long x = (opcode & 0x0F00) >> 8;
+	unsigned long y = (opcode & 0x00F0) >> 8;
+
+	registers[x] = registers[x] - registers[y];
+
+	if(registers[x] > registers[y]){
+		registers[15] = 1;
+	}else{
+		registers[15] = 0;
+	}
+}
+
+
+void Chip8::OP_8xy6(){
+	unsigned long x = opcode & 0x0001;
+
+	if(x){
+		registers[15] = 1;
+	}else{
+		registers[15] = 0;
+	}
+
+	x = (opcode & 0x0F00) >> 8;
+
+	registers[x] = registers[x] / 2;	
+}
+
+
+void Chip8::OP_8xy7(){
+	unsigned long x = (opcode & 0x0F00) >> 8;
+	unsigned long y = (opcode & 0x00F0) >> 8;
+
+	registers[x] = registers[y] - registers[x];
+
+	if(y > x){
+		registers[15] = 1;
+	}else{
+		registers[15] = 0;
+	}
+}
+
+
+void Chip8::OP_8xyE(){
+	unsigned long x = opcode & 0x8000;
+
+	if(x){
+		registers[15] = 1;
+	}else{
+		registers[15] = 0;
+	}
+
+	x = (opcode & 0x0F00) >> 8;
+
+	registers[x] *= 2;
+}
+
+
+void Chip8::OP_9xy0(){
+	unsigned long x = (opcode & 0x0F00) >> 8;
+	unsigned long y = (opcode & 0x00F0) >> 8;
+
+	if(x != y){
+		program_counter += 2;
+	}
+}
+
+void Chip8::OP_Annn(){
+	unsigned long nnn = opcode & 0x0FFF;
+
+	I = nnn;
+}
+
+
+void Chip8::OP_Bnnn(){
+	unsigned long nnn = opcode & 0x0FFF;
+
+	program_counter = nnn + registers[0];
+}
+
+
+void Chip8::OP_Cxkk(){
+	
+}
+
+
 
 
 int main(){

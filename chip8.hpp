@@ -33,6 +33,7 @@ class Chip8{
 	private:
 		uint16_t opcode;
 		uint8_t registers[16];
+		uint16_t I;
 		uint8_t memory[4096];
 		uint16_t index_register;
 		uint16_t program_counter;
@@ -44,6 +45,28 @@ class Chip8{
 		uint32_t display[64*32];
 		uint8_t font[FONT_SIZE];
 
+		void OP_CLS();
+		void OP_RET();
+		void OP_JP();
+		void OP_CALL();
+		void OP_3xkk();
+		void OP_4xkk();
+		void OP_5xy0();
+		void OP_6xkk();
+		void OP_7xkk();
+		void OP_8xy0();
+		void OP_8xy1();
+		void OP_8xy2();
+		void OP_8xy3();
+		void OP_8xy4();
+		void OP_8xy5();
+		void OP_8xy6();
+		void OP_8xy7();
+		void OP_8xyE();
+		void OP_9xy0();
+		void OP_Annn();
+		void OP_Bnnn();
+		void OP_Cxkk();
 
 };
 #endif

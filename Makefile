@@ -8,4 +8,4 @@ screen.o: screen.hpp
 	gcc -c screen.cpp -lSDL2
 
 clean:
-	rm *.o main
+	rm -f *.o main
