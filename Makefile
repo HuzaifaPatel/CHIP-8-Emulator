@@ -1,11 +1,14 @@
-all: chip.o screen.o
-	g++ -o main screen.o chip8.o -lSDL2
+all: chip8.o screen.o main.o
+	g++ -o main screen.o chip8.o main.o -lSDL2 -g3
 
 chip.o: chip8.hpp screen.hpp
-	gcc -c chip8.cpp -lSDL2
+	g++ -c chip8.cpp -lSDL2 -g3
 
 screen.o: screen.hpp
-	gcc -c screen.cpp -lSDL2
+	g++ -c screen.cpp -lSDL2 -g3
+
+main.o: chip8.hpp screen.hpp
+	g++ -c main.cpp -lSDL2 -g3
 
 clean:
 	rm -f *.o main

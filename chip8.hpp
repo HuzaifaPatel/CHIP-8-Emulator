@@ -10,7 +10,6 @@
 #include <stdlib.h>
 #include "screen.hpp"
 #define ROM "test_rom_opcode.ch8"
-
 #define MEMORY_START 				0x000
 #define CHIP8_INTERPRETOR_START 	0X000
 #define CHIP8_INTERPRETOR_END 		0X1FF
@@ -21,17 +20,21 @@
 #define MEMORY_END					0XFFF
 #define FONT_SIZE					80
 #define FONT_STARTING_ADDRESS		0x50
+#define NUM_INSTRUCTIONS			36
 
 
 
 class Chip8{
 	public:
+		void test();
 		Chip8();
 		~Chip8();
 		void load_rom();
-		void load_font_in_memory();
+		void load_font();
+		void cycle();
+		void execute_opcode();
+		uint32_t display[64*32];
 		Screen* screen;
-
 	private:
 		uint16_t opcode;
 		uint8_t registers[16];
@@ -43,13 +46,17 @@ class Chip8{
 		uint8_t delay_timer;
 		uint8_t sound_timer;
 		uint8_t input_keys[16];
-		uint32_t display[64*32];
-		uint8_t font[FONT_SIZE];
-
-		void OP_CLS();
-		void OP_RET();
-		void OP_JP();
-		void OP_CALL();
+		const uint8_t font[FONT_SIZE];
+		void (Chip8::*opcode_table[NUM_INSTRUCTIONS])();
+		const uint8_t fi_nibble() const;
+		const uint8_t se_nibble() const;
+		const uint8_t th_nibble() const;
+		const uint8_t fo_nibble() const;
+		void OP_0nnn();
+		void OP_00EE();
+		void OP_00E0();
+		void OP_1nnn();
+		void OP_2nnn();
 		void OP_3xkk();
 		void OP_4xkk();
 		void OP_5xy0();
@@ -71,5 +78,15 @@ class Chip8{
 		void OP_Dxyn();
 		void OP_Ex9E();
 		void OP_ExA1();
+		void OP_Fx07();
+		void OP_Fx0A();
+		void OP_Fx15();
+		void OP_Fx18();
+		void OP_Fx1E();
+		void OP_Fx29();
+		void OP_Fx33();
+		void OP_Fx55();
+		void OP_Fx65();
+		void OP_NULL();
 };
 #endif

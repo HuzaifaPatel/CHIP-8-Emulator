@@ -18,7 +18,7 @@ Screen::~Screen(){
 
 
 void Screen::update(void const* sprite, int pitch){
-	SDL_UpdateTexture(texture, NULL, sprite, 8);
+	SDL_UpdateTexture(texture, NULL, sprite, pitch);
 	SDL_RenderClear(renderer);
 	SDL_RenderCopy(renderer, texture, nullptr, nullptr);
 	SDL_RenderPresent(renderer);
@@ -93,21 +93,4 @@ char Screen::checkKey(){
 	}
 
 	return -1;
-}
-
-
-void Screen::load_screen(){
-
-
-    for (;;)
-    {
-        SDL_Event ev;
-        while (SDL_PollEvent(&ev))
-        {
-            if (ev.type == SDL_QUIT)
-            {
-                return;
-            }
-        }
-    }
 }

@@ -14,7 +14,6 @@ class Screen{
 		~Screen();
 		void update(void const* buffer, int pitch);
 		void input();
-		void load_screen();
 		void clear_screen();
 		char checkKey();
 		bool running;
