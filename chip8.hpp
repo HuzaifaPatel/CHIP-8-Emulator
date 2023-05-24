@@ -8,8 +8,9 @@
 #include <sstream>
 #include <time.h>
 #include <stdlib.h>
+#include <string>
 #include "screen.hpp"
-#define ROM "test_rom_opcode.ch8"
+#define ROM "rom"
 #define MEMORY_START 				0x000
 #define CHIP8_INTERPRETOR_START 	0X000
 #define CHIP8_INTERPRETOR_END 		0X1FF
@@ -21,6 +22,8 @@
 #define FONT_SIZE					80
 #define FONT_STARTING_ADDRESS		0x50
 #define NUM_INSTRUCTIONS			36
+#define WIDTH 	64
+#define HEIGHT 	32
 
 
 
@@ -48,10 +51,10 @@ class Chip8{
 		uint8_t input_keys[16];
 		const uint8_t font[FONT_SIZE];
 		void (Chip8::*opcode_table[NUM_INSTRUCTIONS])();
-		const uint8_t fi_nibble() const;
-		const uint8_t se_nibble() const;
-		const uint8_t th_nibble() const;
-		const uint8_t fo_nibble() const;
+		const int fi_nibble() const;
+		const int se_nibble() const;
+		const int th_nibble() const;
+		const int fo_nibble() const;
 		void OP_0nnn();
 		void OP_00EE();
 		void OP_00E0();
@@ -87,6 +90,5 @@ class Chip8{
 		void OP_Fx33();
 		void OP_Fx55();
 		void OP_Fx65();
-		void OP_NULL();
 };
 #endif
