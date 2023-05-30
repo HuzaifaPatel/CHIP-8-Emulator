@@ -15,7 +15,8 @@ class Screen{
 		void update(void const* buffer, int pitch);
 		void input();
 		void clear_screen();
-		char checkKey();
+		char checkKey(uint8_t* input_keys);
+		void clearKey(uint8_t* input_keys, uint8_t NUM_INPUT_KEYS);
 		bool running;
 		bool fullscreen;
 		int frameCount;

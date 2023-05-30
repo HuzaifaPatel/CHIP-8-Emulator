@@ -22,6 +22,7 @@
 #define FONT_SIZE					80
 #define FONT_STARTING_ADDRESS		0x50
 #define NUM_INSTRUCTIONS			36
+#define NUM_INPUT_KEYS 16
 #define WIDTH 	64
 #define HEIGHT 	32
 
@@ -37,6 +38,7 @@ class Chip8{
 		void cycle();
 		void execute_opcode();
 		uint32_t display[64*32];
+		uint8_t input_keys[NUM_INPUT_KEYS];
 		Screen* screen;
 	private:
 		uint16_t opcode;
@@ -48,13 +50,12 @@ class Chip8{
 		uint8_t stack_pointer;
 		uint8_t delay_timer;
 		uint8_t sound_timer;
-		uint8_t input_keys[16];
 		const uint8_t font[FONT_SIZE];
 		void (Chip8::*opcode_table[NUM_INSTRUCTIONS])();
-		const int fi_nibble() const;
-		const int se_nibble() const;
-		const int th_nibble() const;
-		const int fo_nibble() const;
+		const uint8_t fi_nibble() const;
+		const uint8_t se_nibble() const;
+		const uint8_t th_nibble() const;
+		const uint8_t fo_nibble() const;
 		void OP_0nnn();
 		void OP_00EE();
 		void OP_00E0();

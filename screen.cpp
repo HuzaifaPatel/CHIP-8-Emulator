@@ -6,7 +6,6 @@ Screen::Screen(){
 	window = SDL_CreateWindow("CHIP 8 EMULATOR", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH*16, HEIGHT*16, SDL_WINDOW_SHOWN);
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_UNKNOWN, SDL_TEXTUREACCESS_STREAMING, WIDTH, HEIGHT);
-
 }
 
 
@@ -52,46 +51,91 @@ void Screen::clear_screen(){
 }
 
 
-char Screen::checkKey(){
-	while(SDL_PollEvent(&event)){            
-	    switch( event.type ){
-	        /* Keyboard event */
-	        case SDLK_0:
-	        	return '0';
-	        case SDLK_1:
-	        	return '1';
-	        case SDLK_2:
-	        	return '2';
-	        case SDLK_3:
-	        	return '3';
-	        case SDLK_4:
-	        	return '4';
-	        case SDLK_5:
-	        	return '5';
-	        case SDLK_6:
-	        	return '6';
-	        case SDLK_7:
-	        	return '7';
-			case SDLK_8:
-				return '8';
-			case SDLK_9:
-				return '9';
-			case SDLK_a:
-				return 'A';
-			case SDLK_b:
-				return 'B';
-			case SDLK_c:
-				return 'C';
-			case SDLK_d:
-				return 'D';
-			case SDLK_e:
-				return 'E';
-			case SDLK_f:
-				return 'F';
-	        default:
-	            return -1;
-	    }
+char Screen::checkKey(uint8_t* input_keys){
+	while(SDL_PollEvent(&event)){   
+	    switch (event.type){
+        	case SDL_KEYDOWN:
+			    switch(event.key.keysym.sym){
+			        /* Keyboard event */
+			        case SDLK_0:
+			        	input_keys[0] = 0;
+			        case SDLK_1:
+			        	input_keys[1] = 1;
+			        case SDLK_2:
+			        	input_keys[2] = 2;
+			        case SDLK_3:
+			        	input_keys[3] = 3;
+			        case SDLK_4:
+			        	input_keys[4] = 4;
+			        case SDLK_5:
+			        	input_keys[5] = 5;
+			        case SDLK_6:
+			        	input_keys[6] = 6;
+			        case SDLK_7:
+			        	input_keys[7] = 7;
+					case SDLK_8:
+						input_keys[8] = 8;
+					case SDLK_9:
+						input_keys[9] = 9;
+					case SDLK_a:
+						input_keys[10] = 10;
+					case SDLK_b:
+						input_keys[11] = 11;
+					case SDLK_c:
+						input_keys[12] = 12;
+					case SDLK_d:
+						input_keys[13] = 13;
+					case SDLK_e:
+						input_keys[14] = 14;
+					case SDLK_f:
+						input_keys[15] = 15;
+			    }
+			case SDL_KEYUP:
+				switch(event.key.keysym.sym){
+			        /* Keyboard event */
+			        case SDLK_0:
+			        	input_keys[0] = 0;
+			        case SDLK_1:
+			        	input_keys[1] = 1;
+			        case SDLK_2:
+			        	input_keys[2] = 2;
+			        case SDLK_3:
+			        	input_keys[3] = 3;
+			        case SDLK_4:
+			        	input_keys[4] = 4;
+			        case SDLK_5:
+			        	input_keys[5] = 5;
+			        case SDLK_6:
+			        	input_keys[6] = 6;
+			        case SDLK_7:
+			        	input_keys[7] = 7;
+					case SDLK_8:
+						input_keys[8] = 8;
+					case SDLK_9:
+						input_keys[9] = 9;
+					case SDLK_a:
+						input_keys[10] = 10;
+					case SDLK_b:
+						input_keys[11] = 11;
+					case SDLK_c:
+						input_keys[12] = 12;
+					case SDLK_d:
+						input_keys[13] = 13;
+					case SDLK_e:
+						input_keys[14] = 14;
+					case SDLK_f:
+						input_keys[15] = 15;
+				}
+		}
 	}
 
-	return -1;
+	return 48;
+}
+
+
+
+void Screen::clearKey(uint8_t* input_keys, uint8_t NUM_INPUT_KEYS){
+	for(uint8_t key = 0; key < NUM_INPUT_KEYS; key++){
+		input_keys[key] = 0;
+	}
 }

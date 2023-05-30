@@ -26,9 +26,9 @@ Chip8::Chip8()
 
 	// order of these matter
 	opcode_table{
-		&Chip8::OP_0nnn,
 		&Chip8::OP_00EE,
 		&Chip8::OP_00E0,
+		&Chip8::OP_0nnn,
 		&Chip8::OP_1nnn,
 		&Chip8::OP_2nnn,
 		&Chip8::OP_3xkk,
@@ -109,10 +109,10 @@ void Chip8::load_font(){
 
 
 
-const int Chip8::fi_nibble() const {return (this->opcode & 0xF000) >> 12;}
-const int Chip8::se_nibble() const {return (this->opcode & 0x0F00) >> 8;}
-const int Chip8::th_nibble() const {return (this->opcode & 0x00F0) >> 4;}
-const int Chip8::fo_nibble() const {return this->opcode & 0x000F;}
+const uint8_t Chip8::fi_nibble() const {return (this->opcode & 0xF000) >> 12;}
+const uint8_t Chip8::se_nibble() const {return (this->opcode & 0x0F00) >> 8;}
+const uint8_t Chip8::th_nibble() const {return (this->opcode & 0x00F0) >> 4;}
+const uint8_t Chip8::fo_nibble() const {return this->opcode & 0x000F;}
 
 
 
@@ -121,6 +121,10 @@ const int Chip8::fo_nibble() const {return this->opcode & 0x000F;}
 void Chip8::cycle(){
 	this->opcode = (memory[program_counter] << 8) | memory[program_counter + 1];
 	this->program_counter += 2;
+
+	if (delay_timer > 0){
+		--delay_timer;
+	}
 }
 
 
@@ -134,25 +138,83 @@ void Chip8::execute_opcode(){
 	// 	exit(1);
 	// }
 
-	// one - three opcode inclusive
-	if(fi_n == 0x00){
-		// std::cout << "true" << std::endl;
-		(this->*opcode_table[(fi_n == 0x0) + (se_n == 0x0) + (th_n == 0x0) + (fo_n == 0x0) - 1])();
-		return;
+	
+	if(fi_n == 0x00 && se_n == 0x00 && th_n == 0xE && fo_n == 0xE){
+		(this->*opcode_table[0])();
 	}
 
-	// four - ten opcode
+
+	if(fi_n == 0x00 && se_n == 0x00 && th_n == 0xE && fo_n == 0x0){
+		(this->*opcode_table[1])();
+	}
+
+	if(fi_n == 0x00){
+		(this->*opcode_table[2])();
+	}
+
+
+	// three - nine opcode
 	if(fi_n > 0x00 && fi_n < 0x8){
 		(this->*opcode_table[fi_n + 2])();
 		return;
 	}
 
 
-	// eleven - nineteen
-	if(fi_n == 0x08){
-		(this->*opcode_table[0xA + fo_nibble()])();
+	if(fi_n == 0x8 && fo_n == 0x0){
+		(this->*opcode_table[10])();
 		return;
 	}
+
+
+	if(fi_n == 0x8 && fo_n == 0x1){
+		(this->*opcode_table[11])();
+		return;
+	}
+
+
+	if(fi_n == 0x8 && fo_n == 0x2){
+		(this->*opcode_table[12])();
+		return;
+	}
+
+
+
+	if(fi_n == 0x8 && fo_n == 0x3){
+		(this->*opcode_table[13])();
+		return;
+	}
+
+
+	if(fi_n == 0x8 && fo_n == 0x4){
+		(this->*opcode_table[14])();
+		return;
+	}
+	
+
+	if(fi_n == 0x8 && fo_n == 0x5){
+		(this->*opcode_table[15])();
+		return;
+	}
+
+
+	if(fi_n == 0x8 && fo_n == 0x6){
+		(this->*opcode_table[16])();
+		return;
+	}
+
+
+	if(fi_n == 0x8 && fo_n == 0x7){
+		(this->*opcode_table[17])();
+		return;
+	}
+
+
+	if(fi_n == 0x08 && fo_n == 0xE){
+		(this->*opcode_table[18])();
+		return;
+	}
+
+
 
 	if(fi_n == 0x09){
 		(this->*opcode_table[19])();
@@ -209,7 +271,7 @@ void Chip8::execute_opcode(){
 
 
 
-	if(fi_n == 0x0F && fo_n == 0x05){
+	if(fi_n == 0x0F && th_n == 0x01 && fo_n == 0x05){
 		(this->*opcode_table[28])();
 		return;	
 	}
@@ -236,36 +298,23 @@ void Chip8::execute_opcode(){
 
 
 	if(fi_n == 0x0F && fo_n == 0x03){
-		(this->*opcode_table[31])();
-		return;	
-	}
-
-
-
-	if(fi_n == 0x0F && th_n == 0x05 & fo_n == 0x05){
 		(this->*opcode_table[32])();
 		return;	
 	}
 
 
 
-	if(fi_n == 0x0F && th_n == 0x06 & fo_n == 0x05){
+	if(fi_n == 0x0F && th_n == 0x05 & fo_n == 0x05){
 		(this->*opcode_table[33])();
 		return;	
 	}
-	// eleven - eighteen
-	// if(fi_n == 0x8){
-	// 	(this->*opcode_table[fi_n + 10])();
-	// 	return;
-	// }
-
-
-	// if(fi_n > 0x9 || fi_n < 0xE){
-
-	// }
 
 
 
+	if(fi_n == 0x0F && th_n == 0x06 & fo_n == 0x05){
+		(this->*opcode_table[34])();
+		return;	
+	}
 }
 
 
@@ -347,39 +396,40 @@ void Chip8::OP_8xy0(){ // GOOD
 
 void Chip8::OP_8xy1(){ // GOOD
 	std::cout << "OP_8xy1" << std::endl;
-	unsigned long x = (opcode & 0x0F00) >> 8;
-	unsigned long y = (opcode & 0x00F0) >> 4;
+	uint8_t x = (opcode & 0x0F00) >> 8;
+	uint8_t y = (opcode & 0x00F0) >> 4;
 
-	registers[x] = x | y;
+	registers[x] |= registers[y];
 }
 
 
 void Chip8::OP_8xy2(){ // GOOD
 	std::cout << "OP_8xy2" << std::endl;
-	unsigned long x = (opcode & 0x0F00) >> 8;
-	unsigned long y = (opcode & 0x00F0) >> 4;
+	uint8_t x = (opcode & 0x0F00) >> 8;
+	uint8_t y = (opcode & 0x00F0) >> 4;
 
-	registers[x] = x & y;
+	registers[x] &= registers[y];
 }
 
 
 void Chip8::OP_8xy3(){ // GOOD
 	std::cout << "OP_8xy3" << std::endl;
-	unsigned long x = (opcode & 0x0F00) >> 8;
-	unsigned long y = (opcode & 0x00F0) >> 4;
+	uint8_t x = (opcode & 0x0F00) >> 8;
+	uint8_t y = (opcode & 0x00F0) >> 4;
 
-	registers[x] = x ^ y;
+	registers[x] ^= registers[y];
 }
 
 
 void Chip8::OP_8xy4(){ // GOOD
 	std::cout << "OP_8xy4" << std::endl;
-	unsigned long x = (opcode & 0x0F00) >> 8;
-	unsigned long y = (opcode & 0x00F0) >> 4;
+	uint8_t x = (opcode & 0x0F00) >> 8;
+	uint8_t y = (opcode & 0x00F0) >> 4;
+	uint16_t temp = (uint16_t)registers[x] + (uint16_t)registers[y];
 
-	registers[x] = registers[x] + registers[y];
+	registers[x] = temp;
 
-	if(registers[x] > 0xFF){	
+	if(temp > 0xFF){	
 		registers[0xF] = 1;
 	}else{
 		registers[0xF] = 0;
@@ -389,72 +439,65 @@ void Chip8::OP_8xy4(){ // GOOD
 
 void Chip8::OP_8xy5(){ // GOOD
 	std::cout << "OP_8xy5" << std::endl;
-	unsigned long x = (opcode & 0x0F00) >> 8;
-	unsigned long y = (opcode & 0x00F0) >> 4;
+	uint8_t x = (opcode & 0x0F00) >> 8;
+	uint8_t y = (opcode & 0x00F0) >> 4;
+	uint8_t temp = registers[x];
 
+	registers[x] -= registers[y];
 
-	if(registers[x] > registers[y]){
+	if(temp > registers[y]){
 		registers[0xF] = 1;
 	}else{
 		registers[0xF] = 0;
 	}
-
-	registers[x] = registers[x] - registers[y];
 }
 
 
 void Chip8::OP_8xy6(){ // GOOD
 	std::cout << "OP_8xy6" << std::endl;
-	unsigned long x = opcode & 0x0001;
+	uint8_t x = opcode & 0x0F00 >> 8;
+	uint8_t temp = registers[x];
+	
+	registers[x] >>= 1;
 
-	if(x){
+	if(temp & 0x01){
 		registers[0xF] = 1;
 	}else{
 		registers[0xF] = 0;
 	}
-
-	registers[x] >>= 1;	
 }
 
 
 void Chip8::OP_8xy7(){ // GOOD
 	std::cout << "OP_8xy7" << std::endl;
-	unsigned long x = (opcode & 0x0F00) >> 8;
-	unsigned long y = (opcode & 0x00F0) >> 4;
-
-
-	if(y > x){
-		registers[15] = 1;
-	}else{
-		registers[15] = 0;
-	}
+	uint8_t x = (opcode & 0x0F00) >> 8;
+	uint8_t y = (opcode & 0x00F0) >> 4;
+	uint16_t temp = registers[x];
 
 	registers[x] = registers[y] - registers[x];
-}
 
-
-void Chip8::OP_8xyE(){ // GOOD
-	std::cout << "OP_8xyE" << std::endl;
-	unsigned long x = (opcode & 0x0F00) >> 8;
-
-	if(x & 0b10000000 >> 7){
+	if(registers[y] > temp){
 		registers[0xF] = 1;
 	}else{
 		registers[0xF] = 0;
 	}
 
-	x = (opcode & 0x0F00) >> 8;
+}
 
-	registers[x] <<= 2;
+
+void Chip8::OP_8xyE(){ // GOOD
+    uint8_t carry = registers[(opcode >> 8) & 0xF] >> 7;
+    registers[(opcode >> 8) & 0xF] <<= 1;
+    registers[0xF] = carry;
 }
 
 
 void Chip8::OP_9xy0(){ // GOOD
 	std::cout << "OP_9xy0" << std::endl;
-	unsigned long x = (opcode & 0x0F00) >> 8;
-	unsigned long y = (opcode & 0x00F0) >> 4;
+	uint8_t x = (opcode & 0x0F00) >> 8;
+	uint8_t y = (opcode & 0x00F0) >> 4;
 
-	if(x != y){
+	if(registers[x] != registers[y]){
 		program_counter += 2;
 	}
 }
@@ -470,7 +513,7 @@ void Chip8::OP_Annn(){ // GOOD
 
 void Chip8::OP_Bnnn(){ // GOOD
 	std::cout << "OP_Bnnn" << std::endl;
-	unsigned long nnn = opcode & 0x0FFF;
+	uint32_t nnn = opcode & 0x0FFF;
 
 	program_counter = nnn + registers[0];
 }
@@ -478,8 +521,8 @@ void Chip8::OP_Bnnn(){ // GOOD
 
 void Chip8::OP_Cxkk(){ // GOOD
 	std::cout << "OP_Cxkk" << std::endl;
-	unsigned long x = (opcode & 0x0F00) >> 8;
-	unsigned int kk = opcode & 0x00FF;
+	uint8_t x = (opcode & 0x0F00) >> 8;
+	uint16_t kk = opcode & 0x00FF;
 
 	registers[x] = (rand() % 255) & kk;
 }
@@ -487,8 +530,8 @@ void Chip8::OP_Cxkk(){ // GOOD
 
 void Chip8::OP_Dxyn(){
 	std::cout << "OP_Dxyn" << std::endl;
-	unsigned long x = registers[(opcode & 0x0F00) >> 8] % WIDTH;
-	unsigned long y = registers[(opcode & 0x00F0) >> 4] % HEIGHT;
+	uint8_t x = registers[(opcode & 0x0F00) >> 8] % WIDTH;
+	uint8_t y = registers[(opcode & 0x00F0) >> 4] % HEIGHT;
 	unsigned long num_bytes = opcode & 0x000F;
 
 	for(unsigned long row = 0; row < num_bytes; row++){
@@ -499,12 +542,15 @@ void Chip8::OP_Dxyn(){
 			uint32_t sprite_pixel = spriteByte & (0x80 >> col);
 			uint32_t* pixel_on_screen = &display[(y + row) * WIDTH + (col + x)];
 
-			if(sprite_pixel){
-				*pixel_on_screen = 0xFFFF;
-				registers[0xF] = 1;
-			}else if(*pixel_on_screen == 0x0 && sprite_pixel == 0x1){
-				*pixel_on_screen = 0xFFFF;
-			}
+            if(sprite_pixel){
+                if(*pixel_on_screen == 0x0) {
+                    *pixel_on_screen = 0xFFFFFFFF;
+                }
+                else {
+                    *pixel_on_screen = 0x00000000;
+                     registers[0xF] = 1;
+                }
+            }
 		}
 	}
 }
@@ -513,9 +559,16 @@ void Chip8::OP_Dxyn(){
 
 void Chip8::OP_Ex9E(){ // GOOD
 	std::cout << "OP_Ex9E" << std::endl;
-	unsigned long x = (opcode & 0x0F00) >> 8;
+	uint8_t x = (opcode & 0x0F00) >> 8;
+	bool key_pressed = false;
 
-	if(registers[x] == screen->checkKey()){
+	for(uint8_t key = 0; key < NUM_INPUT_KEYS; key++){
+		if(input_keys[key] && registers[x] == key_pressed){
+			key_pressed = true;
+		}
+	}
+
+	if(key_pressed){
 		program_counter += 2;
 	}
 }
@@ -523,9 +576,16 @@ void Chip8::OP_Ex9E(){ // GOOD
 
 void Chip8::OP_ExA1(){ // GOOD
 	std::cout << "OP_ExA1" << std::endl;
-	unsigned long x = (opcode & 0x0F00) >> 8;
+	uint8_t x = (opcode & 0x0F00) >> 8;
+	bool key_pressed = false;
 
-	if(registers[x] != screen->checkKey()){
+	for(uint8_t key = 0; key < NUM_INPUT_KEYS; key++){
+		if(input_keys[key] && registers[x] == key_pressed){
+			key_pressed = true;
+		}
+	}
+
+	if(!key_pressed){
 		program_counter += 2;
 	}
 }
@@ -534,7 +594,7 @@ void Chip8::OP_ExA1(){ // GOOD
 
 void Chip8::OP_Fx07(){ // GOOD
 	std::cout << "OP_Fx07" << std::endl;
-	unsigned long x = (opcode & 0x0F00) >> 8;
+	uint8_t x = (opcode & 0x0F00) >> 8;
 
 	registers[x] = this->delay_timer;
 }
@@ -542,15 +602,28 @@ void Chip8::OP_Fx07(){ // GOOD
 
 void Chip8::OP_Fx0A(){ // GOOD
 	std::cout << "OP_Fx0A" << std::endl;
-	unsigned long x = (opcode & 0x0F00) >> 8;
-	
-	registers[x] = screen->checkKey();
+	uint8_t x = (opcode & 0x0F00) >> 8;
+	uint8_t key_pressed = 0;
+
+	for(uint8_t key = 0; key < NUM_INPUT_KEYS; key++){
+		if(input_keys[key]){
+			registers[x] = input_keys[key];
+			key_pressed = input_keys[key];
+			break;
+		}
+	}
+
+	if(!key_pressed){
+		program_counter -= 2;
+	}else{
+		std::cout << "foudn" << std::endl;
+	}
 }
 
 
 void Chip8::OP_Fx15(){ //  GOOD
 	std::cout << "OP_Fx15" << std::endl;
-	unsigned long x = (opcode & 0x0F00) >> 8;
+	uint8_t x = (opcode & 0x0F00) >> 8;
 
 	this->delay_timer = registers[x];
 }
@@ -559,7 +632,7 @@ void Chip8::OP_Fx15(){ //  GOOD
 void Chip8::OP_Fx18(){ // GOOD
 	std::cout << "Fx18" << std::endl;
 
-	unsigned long x = (opcode & 0x0F00) >> 8;	
+	uint8_t x = (opcode & 0x0F00) >> 8;	
 
 	sound_timer = registers[x];
 }
@@ -568,7 +641,7 @@ void Chip8::OP_Fx18(){ // GOOD
 void Chip8::OP_Fx1E(){ // GOOD
 	std::cout << "Fx1E" << std::endl;
 
-	unsigned long x = (opcode & 0x0F00) >> 8;
+	uint8_t x = (opcode & 0x0F00) >> 8;
 
 	index_register += registers[x];
 }
@@ -607,9 +680,9 @@ void Chip8::OP_Fx33(){ // GOOD
 void Chip8::OP_Fx55(){ // GOOD
 	std::cout << "Fx55" << std::endl;
 
-	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
+	uint8_t Vx = (opcode & 0x0F00) >> 8;
 
-	for(int i = 0; i < Vx; i++){
+	for(uint8_t i = 0; i <= Vx; i++){
 		memory[index_register + i] = registers[i]; 
 	}
 }
@@ -618,10 +691,9 @@ void Chip8::OP_Fx55(){ // GOOD
 void Chip8::OP_Fx65(){ // GOOD
 	std::cout << "Fx65" << std::endl;
 
-	uint8_t Vx = (opcode & 0x0F00u) >> 8u;
+	uint8_t Vx = (opcode & 0x0F00) >> 8;
 
-	for (uint8_t i = 0; i <= Vx; ++i)
-	{
+	for (uint8_t i = 0; i <= Vx; ++i){
 		registers[i] = memory[index_register + i];
 	}
 }
