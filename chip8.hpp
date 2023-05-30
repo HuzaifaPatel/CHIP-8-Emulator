@@ -30,7 +30,6 @@
 
 class Chip8{
 	public:
-		void test();
 		Chip8();
 		~Chip8();
 		void load_rom();
