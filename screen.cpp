@@ -25,117 +25,121 @@ void Screen::update(void const* sprite, int pitch){
 }
 
 
-void Screen::input(){
-	SDL_Event e;
-
-	while(SDL_PollEvent(&e)){
-		if(e.type == SDL_QUIT){
-			running = false;
-		}
-
-		const uint8_t* keystates = SDL_GetKeyboardState(NULL);
-
-		if(keystates[SDL_SCANCODE_ESCAPE]){
-			running = false;
-		}
-
-		if(keystates[SDL_SCANCODE_F11]){
-			fullscreen = 1;
-		}
-	}
-}
-
 
 void Screen::clear_screen(){
 	SDL_RenderClear(renderer);
 }
 
 
-char Screen::checkKey(uint8_t* input_keys){
+void Screen::checkKey(uint8_t* input_keys){
 	while(SDL_PollEvent(&event)){   
 	    switch (event.type){
         	case SDL_KEYDOWN:
 			    switch(event.key.keysym.sym){
 			        /* Keyboard event */
 			        case SDLK_0:
-			        	input_keys[0] = 0;
+			        	input_keys[0] = 1;
+			        	break;
 			        case SDLK_1:
 			        	input_keys[1] = 1;
+			        	break;
 			        case SDLK_2:
-			        	input_keys[2] = 2;
+			        	input_keys[2] = 1;
+			        	break;
 			        case SDLK_3:
-			        	input_keys[3] = 3;
+			        	input_keys[3] = 1;
+			        	break;
 			        case SDLK_4:
-			        	input_keys[4] = 4;
+			        	input_keys[4] = 1;
+			        	break;
 			        case SDLK_5:
-			        	input_keys[5] = 5;
+			        	input_keys[5] = 1;
+			        	break;
 			        case SDLK_6:
-			        	input_keys[6] = 6;
+			        	input_keys[6] = 1;
+			        	break;
 			        case SDLK_7:
-			        	input_keys[7] = 7;
+			        	input_keys[7] = 1;
+			        	break;
 					case SDLK_8:
-						input_keys[8] = 8;
+						input_keys[8] = 1;
+						break;
 					case SDLK_9:
-						input_keys[9] = 9;
+						input_keys[9] = 1;
+						break;
 					case SDLK_a:
-						input_keys[10] = 10;
+						input_keys[10] = 1;
+						break;
 					case SDLK_b:
-						input_keys[11] = 11;
+						input_keys[11] = 1;
+						break;
 					case SDLK_c:
-						input_keys[12] = 12;
+						input_keys[12] = 1;
+						break;
 					case SDLK_d:
-						input_keys[13] = 13;
+						input_keys[13] = 1;
+						break;
 					case SDLK_e:
-						input_keys[14] = 14;
+						input_keys[14] = 1;
+						break;
 					case SDLK_f:
-						input_keys[15] = 15;
+						input_keys[15] = 1;
+						break;
 			    }
+			    break;
 			case SDL_KEYUP:
 				switch(event.key.keysym.sym){
 			        /* Keyboard event */
 			        case SDLK_0:
 			        	input_keys[0] = 0;
+			        	break;
 			        case SDLK_1:
-			        	input_keys[1] = 1;
+			        	input_keys[1] = 0;
+			        	break;
 			        case SDLK_2:
-			        	input_keys[2] = 2;
+			        	input_keys[2] = 0;
+			        	break;
 			        case SDLK_3:
-			        	input_keys[3] = 3;
+			        	input_keys[3] = 0;
+			        	break;
 			        case SDLK_4:
-			        	input_keys[4] = 4;
+			        	input_keys[4] = 0;
+			        	break;
 			        case SDLK_5:
-			        	input_keys[5] = 5;
+			        	input_keys[5] = 0;
+			        	break;
 			        case SDLK_6:
-			        	input_keys[6] = 6;
+			        	input_keys[6] = 0;
+			        	break;
 			        case SDLK_7:
-			        	input_keys[7] = 7;
+			        	input_keys[7] = 0;
+			        	break;
 					case SDLK_8:
-						input_keys[8] = 8;
+						input_keys[8] = 0;
+						break;
 					case SDLK_9:
-						input_keys[9] = 9;
+						input_keys[9] = 0;
+						break;
 					case SDLK_a:
-						input_keys[10] = 10;
+						input_keys[10] = 0;
+						break;
 					case SDLK_b:
-						input_keys[11] = 11;
+						input_keys[11] = 0;
+						break;
 					case SDLK_c:
-						input_keys[12] = 12;
+						input_keys[12] = 0;
+						break;
 					case SDLK_d:
-						input_keys[13] = 13;
+						input_keys[13] = 0;
+						break;
 					case SDLK_e:
-						input_keys[14] = 14;
+						input_keys[14] = 0;
+						break;
 					case SDLK_f:
-						input_keys[15] = 15;
+						input_keys[15] = 0;
+						break;
 				}
+				break;
 		}
-	}
-
-	return 48;
-}
-
-
-
-void Screen::clearKey(uint8_t* input_keys, uint8_t NUM_INPUT_KEYS){
-	for(uint8_t key = 0; key < NUM_INPUT_KEYS; key++){
-		input_keys[key] = 0;
 	}
 }

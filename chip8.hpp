@@ -39,6 +39,7 @@ class Chip8{
 		uint32_t display[64*32];
 		uint8_t input_keys[NUM_INPUT_KEYS];
 		Screen* screen;
+		void test();
 	private:
 		uint16_t opcode;
 		uint8_t registers[16];

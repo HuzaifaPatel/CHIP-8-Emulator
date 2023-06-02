@@ -122,9 +122,9 @@ void Chip8::cycle(){
 	this->opcode = (memory[program_counter] << 8) | memory[program_counter + 1];
 	this->program_counter += 2;
 
-	if (delay_timer > 0){
-		--delay_timer;
-	}
+	// if (delay_timer > 0){
+	// 	--delay_timer;
+	// }
 }
 
 
@@ -325,8 +325,9 @@ void Chip8::OP_0nnn(){
 
 
 void Chip8::OP_00E0(){
-	//std::cout << "OP_00E0" << std::endl;
-	screen->clear_screen();
+	for(int i = 0; i < 2048; i++){
+		display[i] = 0;
+	}
 }
 
 
@@ -561,7 +562,7 @@ void Chip8::OP_Ex9E(){ // GOOD
 	//std::cout << "OP_Ex9E" << std::endl;
 	uint8_t Vx = (opcode & 0x0F00) >> 8;
 
-	uint8_t key = registers[Vx];
+	uint8_t key = registers[Vx] & 0xF;
 
 	if(input_keys[key]){
 		program_counter += 2;
@@ -572,7 +573,7 @@ void Chip8::OP_Ex9E(){ // GOOD
 void Chip8::OP_ExA1(){ // GOOD
 	//std::cout << "OP_ExA1" << std::endl;
 	uint8_t Vx = (opcode & 0x0F00) >> 8;
-	uint8_t key = registers[Vx]; 
+	uint8_t key = registers[Vx] & 0xF;
 
 	if(!input_keys[key]){
 		program_counter += 2;
@@ -596,8 +597,8 @@ void Chip8::OP_Fx0A(){ // GOOD
 
 	for(uint8_t key = 0; key < NUM_INPUT_KEYS; key++){
 		if(input_keys[key]){
-			registers[x] = input_keys[key];
-			key_pressed = input_keys[key];
+			registers[x] = key;
+			key_pressed = 1;
 			break;
 		}
 	}
@@ -683,4 +684,11 @@ void Chip8::OP_Fx65(){ // GOOD
 	for (uint8_t i = 0; i <= Vx; ++i){
 		registers[i] = memory[index_register + i];
 	}
+}
+
+
+void Chip8::test(){
+	// for(int i = 0; i < NUM_INPUT_KEYS; i++){
+	// 	std::cout << input_keys[i] << std::endl;
+	// }
 }
